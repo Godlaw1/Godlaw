@@ -3,5 +3,8 @@
 .env.local
 .env.*
 
+# Sessie-log (dynamisch, niet committen)
+sessions-log.md
+
 # Systeem
 .DS_Store
