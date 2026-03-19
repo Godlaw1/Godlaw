@@ -8,3 +8,5 @@ sessions-log.md
 
 # Systeem
 .DS_Store
+.claude/jobs/.state.json
+.claude/jobs/logs/

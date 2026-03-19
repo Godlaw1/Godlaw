@@ -1,0 +1,4 @@
+# JOB: dagelijks-rapport
+# SCHEDULE: daily
+# DESCRIPTION: Genereer een dagelijks voortgangsrapport van het Godlaw-project
+# PROMPT: Lees memory.md en de laatste 5 git-commits. Schrijf een kort dagrapport (max 10 regels): wat is er gedaan, wat staat er open, wat is de volgende stap. Sla op in .claude/jobs/logs/dagelijks-rapport-DATUM.md

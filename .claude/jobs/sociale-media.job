@@ -1,0 +1,4 @@
+# JOB: sociale-media
+# SCHEDULE: weekly:monday
+# DESCRIPTION: Bereid sociale media posts voor op basis van recente inzichten
+# PROMPT: Lees de laatste aantekeningen in memory.md. Schrijf 3 korte posts (elk max 280 tekens) die een kernidee van Godlaw verwoorden met een concreet levensvoorbeeld. Sla op in .claude/jobs/logs/sociale-media-DATUM.md

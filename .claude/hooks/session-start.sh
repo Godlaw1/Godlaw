@@ -91,6 +91,14 @@ for NOTES_FILE in "$PROJECT_DIR/notes.md" "$PROJECT_DIR/aantekeningen.md"; do
   fi
 done
 
+# 5. Geplande jobs controleren
+SCHEDULER="$PROJECT_DIR/.claude/hooks/job-scheduler.py"
+if [ -f "$SCHEDULER" ]; then
+  echo ""
+  CLAUDE_PROJECT_DIR="$PROJECT_DIR" python3 "$SCHEDULER"
+  echo ""
+fi
+
 echo "========================================"
 echo "  Context geladen. Sessie klaar."
 echo "========================================"

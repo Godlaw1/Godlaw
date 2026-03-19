@@ -1,0 +1,4 @@
+# JOB: geheugen-opschonen
+# SCHEDULE: weekly:friday
+# DESCRIPTION: Consolideer en schoon memory.md op
+# PROMPT: Lees memory.md. Verwijder verouderde notities, consolideer dubbele inzichten, en zorg dat de structuur helder blijft. Werk memory.md bij op zijn plek.
