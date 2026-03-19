@@ -1,0 +1,7 @@
+# Geheimen — nooit committen
+.env
+.env.local
+.env.*
+
+# Systeem
+.DS_Store
