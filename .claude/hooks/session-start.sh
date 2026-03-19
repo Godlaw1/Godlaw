@@ -58,7 +58,20 @@ if [ -n "$GIT_DIFF_STAT" ]; then
   echo ""
 fi
 
-# 3. Agent coördinatie
+# 3. Ideeën-wachtrij
+IDEAS_QUEUE="$PROJECT_DIR/.claude/ideas-queue.md"
+if [ -f "$IDEAS_QUEUE" ]; then
+  OPEN_IDEAS=$(grep -c "^\- \[ \]" "$IDEAS_QUEUE" 2>/dev/null || true)
+  if [ "${OPEN_IDEAS:-0}" -gt 0 ]; then
+    echo "## IDEEËN-WACHTRIJ ($OPEN_IDEAS wachtend)"
+    grep "^\- \[ \]" "$IDEAS_QUEUE"
+    echo ""
+    echo "Verwerk deze ideeën en markeer ze als gedaan: - [x]"
+    echo ""
+  fi
+fi
+
+# 4. Agent coördinatie
 AGENTS_SHARED="$PROJECT_DIR/.claude/agents/_shared"
 if [ -f "$AGENTS_SHARED/coordinatie.md" ]; then
   echo "## AGENT COÖRDINATIE"
