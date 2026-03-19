@@ -58,15 +58,28 @@ if [ -n "$GIT_DIFF_STAT" ]; then
   echo ""
 fi
 
-# 3. Takenlijst (todo.md of taken.md)
-for TASK_FILE in "$PROJECT_DIR/todo.md" "$PROJECT_DIR/taken.md" "$PROJECT_DIR/TODO.md"; do
-  if [ -f "$TASK_FILE" ]; then
-    echo "## TAKEN ($(basename "$TASK_FILE"))"
-    cat "$TASK_FILE"
+# 3. Agent coördinatie
+AGENTS_SHARED="$PROJECT_DIR/.claude/agents/_shared"
+if [ -f "$AGENTS_SHARED/coordinatie.md" ]; then
+  echo "## AGENT COÖRDINATIE"
+  cat "$AGENTS_SHARED/coordinatie.md"
+  echo ""
+fi
+
+if [ -f "$AGENTS_SHARED/taken.md" ]; then
+  echo "## OPEN TAKEN"
+  cat "$AGENTS_SHARED/taken.md"
+  echo ""
+fi
+
+if [ -f "$AGENTS_SHARED/communicatie.md" ]; then
+  COMMS=$(grep -v '^#' "$AGENTS_SHARED/communicatie.md" | grep -v '^$' | tail -5 || true)
+  if [ -n "$COMMS" ]; then
+    echo "## RECENTE BERICHTEN"
+    echo "$COMMS"
     echo ""
-    break
   fi
-done
+fi
 
 # 4. Actieve notities (notes.md of aantekeningen.md)
 for NOTES_FILE in "$PROJECT_DIR/notes.md" "$PROJECT_DIR/aantekeningen.md"; do
