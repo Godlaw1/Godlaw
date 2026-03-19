@@ -11,42 +11,73 @@ SOURCE="${CLAUDE_SOURCE:-startup}"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 SESSIONS_LOG="$PROJECT_DIR/sessions-log.md"
-MEMORY_FILE="$PROJECT_DIR/memory.md"
 
 # --- Sessie registreren ---
 if [ ! -f "$SESSIONS_LOG" ]; then
-  cat > "$SESSIONS_LOG" << 'HEADER'
-# Sessie-register
-
-Overzicht van alle Claude Code sessies. Bijgewerkt bij elke sessiestart.
-
-| Tijdstip | Session ID | Bron | Map |
-|----------|-----------|------|-----|
-HEADER
+  printf '# Sessie-register\n\nOverzicht van alle Claude Code sessies.\n\n| Tijdstip | Session ID | Bron | Branch |\n|----------|-----------|------|--------|\n' > "$SESSIONS_LOG"
 fi
 
-echo "| $TIMESTAMP | \`$SESSION_ID\` | $SOURCE | \`$PROJECT_DIR\` |" >> "$SESSIONS_LOG"
+# --- Git context ophalen ---
+cd "$PROJECT_DIR"
+GIT_BRANCH=$(git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "geen git")
+GIT_LOG=$(git log --oneline -5 2>/dev/null || echo "geen commits")
+GIT_STATUS=$(git status --short 2>/dev/null || echo "")
+GIT_DIFF_STAT=$(git diff --stat HEAD 2>/dev/null | tail -1 || echo "")
 
-# --- Context tonen aan het begin van de sessie ---
+echo "| $TIMESTAMP | \`$SESSION_ID\` | $SOURCE | \`$GIT_BRANCH\` |" >> "$SESSIONS_LOG"
+
+# --- Volledig context-overzicht ---
 echo "========================================"
-echo "  GODLAW — Sessie gestart"
-echo "========================================"
-echo "  Tijd      : $TIMESTAMP"
-echo "  Session ID: $SESSION_ID"
-echo "  Bron      : $SOURCE"
-echo "  Map       : $PROJECT_DIR"
+echo "  GODLAW — Sessie gestart: $TIMESTAMP"
 echo "========================================"
 echo ""
 
-if [ -f "$MEMORY_FILE" ]; then
-  echo "--- GEHEUGEN (memory.md) ---"
-  cat "$MEMORY_FILE"
+# 1. Geheugen
+if [ -f "$PROJECT_DIR/memory.md" ]; then
+  echo "## GEHEUGEN"
+  cat "$PROJECT_DIR/memory.md"
   echo ""
-  echo "--- EINDE GEHEUGEN ---"
-else
-  echo "[!] Geen memory.md gevonden in $PROJECT_DIR"
 fi
 
+# 2. Git-context
+echo "## GIT-CONTEXT"
+echo "Branch : $GIT_BRANCH"
 echo ""
-echo "Sessie-log bijgewerkt: $SESSIONS_LOG"
+echo "Laatste 5 commits:"
+echo "$GIT_LOG"
+echo ""
+
+if [ -n "$GIT_STATUS" ]; then
+  echo "Gewijzigde bestanden:"
+  echo "$GIT_STATUS"
+  echo ""
+fi
+
+if [ -n "$GIT_DIFF_STAT" ]; then
+  echo "Wijzigingen: $GIT_DIFF_STAT"
+  echo ""
+fi
+
+# 3. Takenlijst (todo.md of taken.md)
+for TASK_FILE in "$PROJECT_DIR/todo.md" "$PROJECT_DIR/taken.md" "$PROJECT_DIR/TODO.md"; do
+  if [ -f "$TASK_FILE" ]; then
+    echo "## TAKEN ($(basename "$TASK_FILE"))"
+    cat "$TASK_FILE"
+    echo ""
+    break
+  fi
+done
+
+# 4. Actieve notities (notes.md of aantekeningen.md)
+for NOTES_FILE in "$PROJECT_DIR/notes.md" "$PROJECT_DIR/aantekeningen.md"; do
+  if [ -f "$NOTES_FILE" ]; then
+    echo "## NOTITIES ($(basename "$NOTES_FILE"))"
+    tail -30 "$NOTES_FILE"
+    echo ""
+    break
+  fi
+done
+
+echo "========================================"
+echo "  Context geladen. Sessie klaar."
 echo "========================================"
